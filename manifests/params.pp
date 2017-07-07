@@ -20,7 +20,7 @@ class bamboo_agent::params {
   }
   $bamboo_manage_groups = $facts['os']['family'] ? {
     'Windows' => false,
-    default => true
+    default => false
   }
   $bamboo_manage_capabilities = true
 
@@ -30,7 +30,6 @@ class bamboo_agent::params {
 
   # Bamboo Agent Settings
   $bamboo_agent_capabilities = {}
-  $bamboo_agent_tools = ''
   $bamboo_agent_home_location = $facts['os']['family'] ? {
     'Windows' => 'D:\\Atlassian\\Bamboo\\%s',
     default   => '/opt/atlassian/bamboo/%s'
@@ -38,8 +37,5 @@ class bamboo_agent::params {
   $bamboo_agent_wrapper_properties = {}
 
   # Java settings
-  $java_home = $facts['os']['family'] ? {
-    'windows' => ' C:\\Windows\\System32\\java.exe',
-    default   => '/usr/bin/java'
-  }
+  $java_home = undef
 }

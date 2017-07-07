@@ -23,7 +23,7 @@ define bamboo_agent::agent (
   Optional[Boolean] $manage_groups           = true,
   Optional[Boolean] $manage_home             = true,
   Optional[String]  $username                = '',
-  Optional[String]  $service_name            = '',
+  Optional[String]  $service_name            = $title,
   Optional[Array]   $user_groups             = [],
   Optional[Boolean] $manage_capabilities     = true,
   Optional[Hash]    $wrapper_conf_properties = {},

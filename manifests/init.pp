@@ -5,7 +5,8 @@
 #
 # $agents should contain a hash mapping to the parameters in the bamboo_agent::agent defined type
 #
-# @param home home directory for the bamboo agent user
+# @param bamboo_user_home home directory for the bamboo agent user
+# @param bamboo_agent_home home directory for the bamboo agent it self
 # @param server_url url for the bamboo server the agent talks to
 # @param capabilities hash of custom capabilities for the agent
 # @param manage_user Create the bamboo service account(s)
@@ -21,9 +22,9 @@
 #    class { 'bamboo_agent':
 #     'agents' => {
 #        'bamboo-agent' => {
-#        home         => '/var/lib/bamboo-agent',
-#        server_url   => 'https://bamboo.example.com',
-#        capabilities => {
+#        bamboo_user_home => '/var/lib/bamboo-agent',
+#        server_url       => 'https://bamboo.example.com',
+#        capabilities     => {
 #          'system.builder.command.Bash' => '/bin/bash',
 #          'hostname'                    => $::hostname,
 #        },
@@ -33,8 +34,8 @@
 #        }
 #      },
 #        'bamboo-agent2' => {
-#          home       => '/var/lib/bamboo-agent2',
-#          server_url => 'https://bamboo.example.com',
+#          bamboo_user_home => '/var/lib/bamboo-agent2',
+#          server_url       => 'https://bamboo.example.com',
 #        }
 #    }
 #  }
@@ -43,6 +44,7 @@
 # -------
 #
 # Author Name dschaaff@knuedge.com
+# Author Name siebren.zwerver@gmail.com
 #
 # Copyright
 # ---------
@@ -54,6 +56,7 @@ class bamboo_agent (
   Hash $agents = {},
 ) inherits bamboo_agent::params {
 
+  # Get defaults from params.pp
   Bamboo_agent::Agent {
     server_url              => $bamboo_agent::params::bamboo_server_url,
     bamboo_user_home        => $bamboo_agent::params::bamboo_user_home,
@@ -67,8 +70,7 @@ class bamboo_agent (
     manage_capabilities     => $bamboo_agent::params::bamboo_manage_capabilities,
     wrapper_conf_properties => $bamboo_agent::params::bamboo_agent_wrapper_properties,
     check_certificate       => $bamboo_agent::params::bamboo_server_check_certificate,
-    java_home               => $bamboo_agent::params::java_home,
-    bamboo_tools            => $bamboo_agent::params::bamboo_agent_tools
+    java_home               => $bamboo_agent::params::java_home
   }
 
   # user iteration and other defines to setup each agent
@@ -76,7 +78,6 @@ class bamboo_agent (
     $bamboo_agent_home = sprintf($bamboo_agent::params::bamboo_agent_home_location, $agent)
 
     bamboo_agent::agent {$agent:
-      service_name      => $agent,
       bamboo_agent_home => $bamboo_agent_home,
       *                 => $params,
     }
