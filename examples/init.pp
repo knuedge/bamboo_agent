@@ -29,4 +29,3 @@ class { 'bamboo_agent':
     }
   }
 }
-
