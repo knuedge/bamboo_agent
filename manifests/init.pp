@@ -73,17 +73,7 @@ class bamboo_agent (
 
   # user iteration and other defines to setup each agent
   $agents.each |String $agent, Hash $params| {
-    case $facts['os']['family'] {
-      'Debian', 'RedHat': {
-        $bamboo_agent_home = sprintf($bamboo_agent::params::bamboo_agent_home_location, $agent)
-      }
-      'Windows': {
-        $bamboo_agent_home = sprintf($bamboo_agent::params::bamboo_agent_home_location, $agent)
-      }
-      default: {
-        $bamboo_agent_home = sprintf($bamboo_agent::params::bamboo_agent_home_location, $agent)
-      }
-    }
+    $bamboo_agent_home = sprintf($bamboo_agent::params::bamboo_agent_home_location, $agent)
 
     bamboo_agent::agent {$agent:
       service_name      => $agent,

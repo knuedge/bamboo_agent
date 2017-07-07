@@ -4,19 +4,15 @@ describe 'bamboo_agent' do
 
   on_supported_os.each do |os, facts|
     context "on #{os}" do
-      let(:facts) do
-        facts.merge({
-          :r9util_properties_lens_path => '/opt/puppetlabs/puppet/cache/lib/augeas/lenses'
-          })
-      end
       let (:title) { 'test-agent' }
       let (:params) do {
         'agents' => {
           'test-agent' => {
-            'home' => '/home/test-agent',
+            'username' => 'test-agent',
+            'bamboo_user_home' => '/home/test-agent',
             'user_groups' => ['foo'],
             'manage_groups' => true,
-            'server_url' => 'https://bamboo.example.com',
+            'bamboo_server_url' => 'https://bamboo.example.com',
             'capabilities' => {
               'system.builder.command.Bash' => '/bin/bash',
               'hostname'                    => 'foo.exmaple.com',
@@ -27,8 +23,9 @@ describe 'bamboo_agent' do
             }
           },
           'test-agent2' => {
-            'home'       => '/home/test-agent2',
-            'server_url' => 'https://bamboo.example.com'
+            'username'         => 'test-agent2',
+            'bamboo_user_home' => '/home/test-agent2',
+            'server_url'       => 'https://bamboo.example.com'
           }
         }
       }
@@ -169,4 +166,3 @@ describe 'bamboo_agent' do
     end
   end
 end
-
