@@ -19,7 +19,7 @@
 # @example Create 2 puppet agents
 # @example
 #    class { 'bamboo_agent':
-#     'agents' =>
+#     'agents' => {
 #        'bamboo-agent' => {
 #        home         => '/var/lib/bamboo-agent',
 #        server_url   => 'https://bamboo.example.com',
@@ -52,12 +52,43 @@
 # @param agents hash of bamboo agents mapping to bamboo_agent::agent defined type
 class bamboo_agent (
   Hash $agents = {},
-) {
+) inherits bamboo_agent::params {
+
+  Bamboo_agent::Agent {
+    server_url              => $bamboo_agent::params::bamboo_server_url,
+    bamboo_user_home        => $bamboo_agent::params::bamboo_user_home,
+    bamboo_agent_home       => $bamboo_agent::params::bamboo_agent_home_location,
+    capabilities            => $bamboo_agent::params::bamboo_agent_capabilities,
+    manage_user             => $bamboo_agent::params::bamboo_manage_user,
+    manage_groups           => $bamboo_agent::params::bamboo_manage_groups,
+    manage_home             => $bamboo_agent::params::bamboo_manage_user_home,
+    username                => $bamboo_agent::params::bamboo_user_user,
+    user_groups             => $bamboo_agent::params::bamboo_user_groups,
+    manage_capabilities     => $bamboo_agent::params::bamboo_manage_capabilities,
+    wrapper_conf_properties => $bamboo_agent::params::bamboo_agent_wrapper_properties,
+    check_certificate       => $bamboo_agent::params::bamboo_server_check_certificate,
+    java_home               => $bamboo_agent::params::java_home,
+    bamboo_tools            => $bamboo_agent::params::bamboo_agent_tools
+  }
 
   # user iteration and other defines to setup each agent
   $agents.each |String $agent, Hash $params| {
-    bamboo_agent::agent { $agent:
-      * => $params,
+    case $facts['os']['family'] {
+      'Debian', 'RedHat': {
+        $bamboo_agent_home = sprintf($bamboo_agent::params::bamboo_agent_home_location, $agent)
+      }
+      'Windows': {
+        $bamboo_agent_home = sprintf($bamboo_agent::params::bamboo_agent_home_location, $agent)
+      }
+      default: {
+        $bamboo_agent_home = sprintf($bamboo_agent::params::bamboo_agent_home_location, $agent)
+      }
+    }
+
+    bamboo_agent::agent {$agent:
+      service_name      => $agent,
+      bamboo_agent_home => $bamboo_agent_home,
+      *                 => $params,
     }
   }
 }
