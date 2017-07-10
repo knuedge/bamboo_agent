@@ -6,6 +6,7 @@
 # $agents should contain a hash mapping to the parameters in the bamboo_agent::agent defined type
 #
 # @param home home directory for the bamboo agent user
+# @param bamboo_agent_home home directory for the bamboo agent it self
 # @param server_url url for the bamboo server the agent talks to
 # @param capabilities hash of custom capabilities for the agent
 # @param manage_user Create the bamboo service account(s)
@@ -19,7 +20,7 @@
 # @example Create 2 puppet agents
 # @example
 #    class { 'bamboo_agent':
-#     'agents' =>
+#     'agents' => {
 #        'bamboo-agent' => {
 #        home         => '/var/lib/bamboo-agent',
 #        server_url   => 'https://bamboo.example.com',
@@ -43,6 +44,7 @@
 # -------
 #
 # Author Name dschaaff@knuedge.com
+# Author Name siebren.zwerver@gmail.com
 #
 # Copyright
 # ---------
@@ -52,12 +54,28 @@
 # @param agents hash of bamboo agents mapping to bamboo_agent::agent defined type
 class bamboo_agent (
   Hash $agents = {},
-) {
+) inherits bamboo_agent::params {
+
+  # Get defaults from params.pp
+  Bamboo_agent::Agent {
+    server_url              => $bamboo_agent::params::bamboo_server_url,
+    home                    => $bamboo_agent::params::bamboo_user_home,
+    capabilities            => $bamboo_agent::params::bamboo_agent_capabilities,
+    manage_user             => $bamboo_agent::params::bamboo_manage_user,
+    manage_groups           => $bamboo_agent::params::bamboo_manage_groups,
+    manage_home             => $bamboo_agent::params::bamboo_manage_user_home,
+    username                => $bamboo_agent::params::bamboo_user_user,
+    user_groups             => $bamboo_agent::params::bamboo_user_groups,
+    manage_capabilities     => $bamboo_agent::params::bamboo_manage_capabilities,
+    wrapper_conf_properties => $bamboo_agent::params::bamboo_agent_wrapper_properties,
+    check_certificate       => $bamboo_agent::params::bamboo_server_check_certificate,
+    java_home               => $bamboo_agent::params::java_home
+  }
 
   # user iteration and other defines to setup each agent
   $agents.each |String $agent, Hash $params| {
-    bamboo_agent::agent { $agent:
-      * => $params,
+    bamboo_agent::agent {$agent:
+      *                 => $params,
     }
   }
 }
