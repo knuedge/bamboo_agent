@@ -1,7 +1,7 @@
 # bamboo_agent
 
 ## Build Status
-[![Build Status](https://travis-ci.org/Siebjee/bamboo_agent.svg?branch=master)](https://travis-ci.org/Siebjee/bamboo_agent)
+[![Build Status](https://travis-ci.org/knuedge/bamboo_agent.svg?branch=master)](https://travis-ci.org/knuedge/bamboo_agent)
 
 #### Table of Contents
 
