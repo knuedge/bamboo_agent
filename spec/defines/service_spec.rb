@@ -9,11 +9,6 @@ describe 'bamboo_agent::service' do
   end
   on_supported_os.each do |os, facts|
     context "on #{os}" do
-      let(:facts) do
-        facts.merge({
-          :r9util_properties_lens_path => '/opt/puppetlabs/puppet/cache/lib/augeas/lenses'
-          })
-      end
     end
   end
 end
