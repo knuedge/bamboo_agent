@@ -14,5 +14,5 @@ define bamboo_agent::capabilities(
     mode    => '0644',
     owner   => $username,
     content => template('bamboo_agent/bamboo-capabilities.properties.erb')
-  }
+    }
 }

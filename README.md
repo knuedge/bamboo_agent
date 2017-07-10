@@ -1,7 +1,7 @@
 # bamboo_agent
 
 ## Build Status
-[![Build Status](https://travis-ci.org/Siebjee/bamboo_agent.svg?branch=master)](https://travis-ci.org/Siebjee/bamboo_agent)
+[![Build Status](https://travis-ci.org/knuedge/bamboo_agent.svg?branch=master)](https://travis-ci.org/knuedge/bamboo_agent)
 
 #### Table of Contents
 
@@ -40,9 +40,9 @@ The bamboo_agent class accepts a single parameter, agents, containing a hash of 
 class { 'bamboo_agent':
   agents => {
     'bamboo-agent' => {
-      bamboo_agent_home               => '/var/lib/bamboo-agent',
-      server_url                      => 'https://bamboo.example.com',
-      capabilities                    => {
+      home         => '/var/lib/bamboo-agent',
+      server_url   => 'https://bamboo.example.com',
+      capabilities => {
         'system.builder.command.Bash' => '/bin/bash',
         'hostname'                    => $::hostname,
       },
@@ -52,9 +52,9 @@ class { 'bamboo_agent':
       }
     },
     'bamboo-agent2' => {
-      java_home         => '/etc/alternatives/jre_1.8.0',
-      bamboo_agent_home => '/var/lib/bamboo-agent2',
-      server_url        => 'https://bamboo.example.com',
+      java_home  => '/etc/alternatives/jre_1.8.0',
+      home       => '/var/lib/bamboo-agent2',
+      server_url => 'https://bamboo.example.com',
     }
   }
 }
@@ -90,30 +90,21 @@ The main class.
 
 ### Defined Type`bamboo_agent::agent`
 #### Parameters
-* `home`: The home directory of the bamboo-agent user
-    - Default Linux: /home/bamboo
-    - Default Windows: unset
-* `bamboo_agent_home`: The home directory of the bamboo-agent it self
-    - Default: `home`
-* `server_url`: The bamboo server url
-    - Default: http://bamboo.example.com
+* `home`: *requried* The home directory of the bamboo-agent user
+    - Default: unset
+* `server_url`: *required* The bamboo server url
+    - Default: unset
 * `capabilities`: *optional* Hash of custom capabilites
     - Default: `{}`
 * `manage_user`: *optionl* Whether the module should create the user account
-    - Default Linux: `true`
-    - Default Windows: `false`
+    - Default: `true`
 * `manage_groups`: *optional* Whether the module should create groups specified in `$user_groups*``
-    - Default Linux: `false`
-    - Default Windows: `false`
+    - Default: `false`
 * `manage_home`: *optional* Whether the module should create the users home directory
-    - Default Linux: `true`
-    - Default Windows: `false`
+    - Default: `true`
 * `username`: *optional* The username of the bamboo-agent user
-    - Default Linux: `bamboo`
-    - Default Windows: unset
+    - Default: `$title`
 * `user_groups`: *optional* Groups bamboo-agent user should be a member of
-    - Default Linux: `bamboo`
-    - Default Windows: unset
 * `manage_capabilities`: *optional* Whether the module should manage the bamboo-agent's capabilities file
     - Default: `true`
 * `wrapper_conf_properties`: *optoinal* Options to be placed in the bamboo-agent's wrapper.conf file
@@ -136,3 +127,5 @@ are Known Issues, you might want to include them under their own heading here.
 - Create a branch
 - Add tests for your changes
 - Submit a pull request
+
+

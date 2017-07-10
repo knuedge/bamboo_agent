@@ -14,45 +14,20 @@
 # @param check_certificate Whether to have wget check the certificate of the Bamboo server when downloading the installer jar
 # @param java_home Specify a value for the `JAVA_HOME` environment variable to include in the system init script
 define bamboo_agent::agent (
-  String            $agent_name              = $title,
-  String            $server_url              = '',
-  Optional[String]  $home                    = '',
-  Optional[String]  $bamboo_agent_home       = $home,
-  Optional[Hash]    $capabilities            = {},
-  Optional[Boolean] $manage_user             = true,
-  Optional[Boolean] $manage_groups           = true,
-  Optional[Boolean] $manage_home             = true,
-  Optional[String]  $username                = '',
-  Optional[String]  $service_name            = $title,
-  Optional[Array]   $user_groups             = [],
-  Optional[Boolean] $manage_capabilities     = true,
-  Optional[Hash]    $wrapper_conf_properties = {},
-  Optional[Boolean] $check_certificate       = true,
-  Optional[String]  $java_home               = '',
-  Optional[String]  $bamboo_tools            = ''
+  String           $home,
+  String           $server_url,
+  Hash             $capabilities            = {},
+  Boolean          $manage_user             = true,
+  Boolean          $manage_groups           = false,
+  Boolean          $manage_home             = true,
+  String           $username                = $title,
+  String           $service_name            = $title,
+  Array            $user_groups             = [],
+  Boolean          $manage_capabilities     = true,
+  Hash             $wrapper_conf_properties = {},
+  Boolean          $check_certificate       = true,
+  Optional[String] $java_home               = undef,
 ) {
-  Bamboo_agent::Service {$agent_name:
-    service_name => $service_name,
-    agent_home   => $bamboo_agent_home
-  }
-
-  if $facts['os']['family'] == 'Windows' {
-    ensure_resource('windows_env', 'WINDOWS_JAVA_HOME', {
-      ensure    => present,
-      variable  => 'JAVA_HOME',
-      value     => $java_home,
-      mergemode => clobber
-    })
-
-    if $bamboo_tools != undef {
-      ensure_resource('windows_env', 'WINDOWS_BAMBOO_TOOLS', {
-        ensure    => present,
-        variable  => 'BAMBOO_TOOLS',
-        value     => $bamboo_tools,
-        mergemode => clobber
-      })
-    }
-  }
 
   if $manage_groups == true {
     group {$user_groups:
@@ -61,52 +36,25 @@ define bamboo_agent::agent (
   }
   # setup user
   if $manage_user == true {
-    ensure_resource('user', $username, {
+    user { $username:
       ensure  => present,
       comment => "bamboo-agent ${username}",
       home    => $home,
       shell   => '/bin/bash',
       groups  => $user_groups,
       system  => true,
-    })
+    }
   }
 
   if $manage_home == true {
-    ensure_resource('file', $home, {
+    file {$home:
       ensure => directory,
       owner  => $username,
-    })
-  }
-
-  case $facts['os']['family'] {
-    'Debian', 'RedHat': {
-      $mkdir_command = "mkdir -p ${bamboo_agent_home}"
-      $provider = 'shell'
-    }
-    'Windows': {
-      $mkdir_command = "cmd.exe /c Mkdir ${bamboo_agent_home}"
-      $provider = 'windows'
-    }
-    default: {
-      $mkdir_command = "mkdir -p ${bamboo_agent_home}"
-      $provider = 'shell'
     }
   }
 
-  exec { "create bamboo_agent_home: ${bamboo_agent_home}":
-    command  => $mkdir_command,
-    path     => $::path,
-    provider => $provider,
-    creates  => $bamboo_agent_home
-  }
-  -> file {$bamboo_agent_home:
-    ensure  => directory,
-    owner   => $username,
-    recurse => true
-  }
-
-  bamboo_agent::install{$agent_name:
-    home              => $bamboo_agent_home,
+  bamboo_agent::install {$service_name:
+    home              => $home,
     username          => $username,
     server_url        => $server_url,
     check_certificate => $check_certificate,
@@ -114,22 +62,26 @@ define bamboo_agent::agent (
   }
 
   if $manage_capabilities == true {
-    bamboo_agent::capabilities{ $agent_name:
-      home         => $bamboo_agent_home,
+    bamboo_agent::capabilities { $service_name:
+      home         => $home,
       username     => $username,
       capabilities => $capabilities,
-      require      => [ File[$bamboo_agent_home], Bamboo_agent::Install[$agent_name] ],
-      notify       => Bamboo_agent::Service[$agent_name]
+      require      => [ User[$username], Bamboo_agent::Install[$service_name], ],
+      notify       => Service[$service_name],
     }
   }
 
-  bamboo_agent::wrapper_conf {$agent_name:
-    home       => $bamboo_agent_home,
+  bamboo_agent::wrapper_conf { $service_name:
+    home       => $home,
     properties => $wrapper_conf_properties,
-    notify     => Bamboo_agent::Service[$agent_name]
+    notify     => Service[$service_name]
   }
 
-  Bamboo_agent::Install[$agent_name]
-  -> Bamboo_agent::Service[$agent_name]
+  bamboo_agent::service { $service_name:
+    username  => $username,
+    home      => $home,
+    java_home => $java_home,
+    require   => Bamboo_Agent::Install[$service_name],
+  }
 
 }
