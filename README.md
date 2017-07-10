@@ -40,9 +40,9 @@ The bamboo_agent class accepts a single parameter, agents, containing a hash of 
 class { 'bamboo_agent':
   agents => {
     'bamboo-agent' => {
-      bamboo_agent_home               => '/var/lib/bamboo-agent',
-      server_url                      => 'https://bamboo.example.com',
-      capabilities                    => {
+      home         => '/var/lib/bamboo-agent',
+      server_url   => 'https://bamboo.example.com',
+      capabilities => {
         'system.builder.command.Bash' => '/bin/bash',
         'hostname'                    => $::hostname,
       },
@@ -52,9 +52,9 @@ class { 'bamboo_agent':
       }
     },
     'bamboo-agent2' => {
-      java_home         => '/etc/alternatives/jre_1.8.0',
-      bamboo_agent_home => '/var/lib/bamboo-agent2',
-      server_url        => 'https://bamboo.example.com',
+      java_home  => '/etc/alternatives/jre_1.8.0',
+      home       => '/var/lib/bamboo-agent2',
+      server_url => 'https://bamboo.example.com',
     }
   }
 }
