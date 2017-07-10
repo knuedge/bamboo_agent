@@ -32,7 +32,7 @@ define bamboo_agent::install (
     }
     'Windows': {
       $download_command = "(new-object System.Net.WebClient).Downloadfile(\"${server_url}/agentServer/agentInstaller/atlassian-bamboo-agent-installer.jar\", \"${home}\\atlassian-bamboo-agent-installer.jar\")"
-      $install_command = "${java_home}\\bin\\java.exe -jar -Dbamboo.home=${home} atlassian-bamboo-agent-installer.jar ${server_url}/agentServer/ install"
+      $install_command = "\"${java_home}\\bin\\java.exe\" -jar -Dbamboo.home=${home} atlassian-bamboo-agent-installer.jar ${server_url}/agentServer/ install"
       $provider = 'powershell'
       $real_username = undef
     }
