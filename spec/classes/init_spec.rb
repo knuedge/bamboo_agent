@@ -5,9 +5,9 @@ describe 'bamboo_agent' do
   on_supported_os.each do |os, facts|
     context "on #{os}" do
       let (:title) { 'test-agent' }
-      let(:facts) {
+      let(:facts) do
         facts.merge({:os => { :family => os })
-      },
+      end
       let (:params) do {
         'agents' => {
           'test-agent' => {
