@@ -44,7 +44,7 @@ define bamboo_agent::service ( $service_name, $agent_home ){
     }
   }
 
-  if $facts['os']['family'] != 'Windows' {
+  if $::osfamily != 'Windows' {
     file {$initscript:
       ensure  => present,
       owner   => 'root',

@@ -10,15 +10,15 @@ class bamboo_agent::params {
   $bamboo_user_groups = ['bamboo']
 
   # Bamboo manage settings
-  $bamboo_manage_user = $facts['os']['family'] ? {
+  $bamboo_manage_user = $::osfamily ? {
     'Windows' => false,
     default => true
   }
-  $bamboo_manage_user_home = $facts['os']['family'] ? {
+  $bamboo_manage_user_home = $::osfamily ? {
     'Windows' => false,
     default => true
   }
-  $bamboo_manage_groups = $facts['os']['family'] ? {
+  $bamboo_manage_groups = $::osfamily ? {
     'Windows' => false,
     default => false
   }

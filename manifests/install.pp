@@ -23,7 +23,7 @@ define bamboo_agent::install (
     default => ''
   }
 
-  case $facts['os']['family'] {
+  case $::osfamily {
     'Debian', 'RedHat': {
       $download_command = "wget ${no_check_cert_flag} ${server_url}/agentServer/agentInstaller/atlassian-bamboo-agent-installer.jar"
       $install_command = "java -jar -Dbamboo.home=${home} atlassian-bamboo-agent-installer.jar ${server_url}/agentServer/ install"

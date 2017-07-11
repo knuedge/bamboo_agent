@@ -7,7 +7,7 @@ define bamboo_agent::wrapper_conf (
   $properties = {},
   )
 {
-  case $facts['os']['family'] {
+  case $::osfamily {
     'Debian','RedHat': {
       $path = "${home}/conf/wrapper.conf"
     }

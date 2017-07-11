@@ -36,7 +36,7 @@ define bamboo_agent::agent (
     agent_home   => $bamboo_agent_home
   }
 
-  if $facts['os']['family'] == 'Windows' {
+  if $::osfamily == 'Windows' {
     ensure_resource('windows_env', 'WINDOWS_JAVA_HOME', {
       ensure    => present,
       variable  => 'JAVA_HOME',
@@ -78,7 +78,7 @@ define bamboo_agent::agent (
     })
   }
 
-  case $facts['os']['family'] {
+  case $::osfamily {
     'Debian', 'RedHat': {
       $mkdir_command = "mkdir -p ${bamboo_agent_home}"
       $provider = 'shell'

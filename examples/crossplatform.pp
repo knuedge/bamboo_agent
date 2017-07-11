@@ -1,4 +1,4 @@
-case $facts['os']['family'] {
+case $::osfamily {
   'Debian', 'RedHat': {
     $java_home           = '/opt/jdk1.8.0_92'
     $bamboo_manage_group = false
@@ -7,7 +7,7 @@ case $facts['os']['family'] {
       ## Basic OS capabilities
       'Hostname' => $::hostname,
       'Server'   => $::hostname,
-      'OS'       => $facts['os']['family'],
+      'OS'       => $::osfamily,
       'Linux'    => true,
       ## JDK capabilities
       'system.jdk.JDK'            => "${bamboo_tools}/jdk1.8.0_65",
@@ -44,7 +44,7 @@ case $facts['os']['family'] {
       ## Basic OS capabilities
       'Hostname' => $::hostname,
       'Server'   => $::hostname,
-      'OS'       => $facts['os']['family'],
+      'OS'       => $::osfamily,
       'Windows'  => true,
       ## JDK capabilities
       'system.jdk.JDK'            => 'C:\\Program\ Files\\Java\\jdk1.8.0_66',
