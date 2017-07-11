@@ -6,7 +6,7 @@ describe 'bamboo_agent::agent' do
     puts "os: #{os}"
     let(:facts) {
       facts.merge({:os => { :family => os })
-    }
+    },
     context "on #{os}" do
       let (:title) { 'test-agent' }
       let (:params) do {

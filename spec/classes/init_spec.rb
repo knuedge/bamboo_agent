@@ -7,7 +7,7 @@ describe 'bamboo_agent' do
       let (:title) { 'test-agent' }
       let(:facts) {
         facts.merge({:os => { :family => os })
-      }
+      },
       let (:params) do {
         'agents' => {
           'test-agent' => {
